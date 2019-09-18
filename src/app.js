@@ -10,7 +10,7 @@ app .use( cors() );                                 // Habilita el Cross-origin 
 app .use( express .json() );                        // Analiza las solicitudes entrantes con cargas JSON
 
 // Routes
-
+app .use( '/api/users', require( './routes/user.routes' ) );    // 
 
 // Export Modulo Express
 module .exports = app

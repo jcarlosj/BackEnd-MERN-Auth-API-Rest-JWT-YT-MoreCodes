@@ -1,8 +1,8 @@
 const mongoose = require( 'mongoose' ),         // Importa Mongoose
-      Schema = new mongoose .Schema;            // Instancia Estructura para crear el Modelo
+      Schema = mongoose .Schema;            // Instancia Estructura para crear el Modelo
       
 // Define Modelo para la entidad 'usuario'      
-const UserSchema =  new Schema({
+const UserSchema = new Schema({
     userName: {
         type: String,
         required: true
