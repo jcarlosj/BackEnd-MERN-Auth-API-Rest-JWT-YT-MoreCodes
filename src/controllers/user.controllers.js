@@ -1,9 +1,11 @@
 /** Users Controllers */
 const userController = {},
+      app = require( '../app' ), // Importa Express a la Aplicación
       bcrypt = require( 'bcrypt' ),                   // Importa Paquete para encriptar contrasenas
+      jwt = require( 'jsonwebtoken' ),                // Genera Web Token
       User = require( '../models/user.model' );       // Importa el Modelo de datos;
 
-// Crea Usuario
+// Registra Usuario
 userController .createUser = async ( request, response ) => { 
     console .log( 'Enviado por el Cliente', request .body );      // Representa los datos que envia el 'cliente'
 
@@ -42,9 +44,62 @@ userController .createUser = async ( request, response ) => {
         }
 
     } catch( err ) {
-        response .send( `ERROR: ${ err }` )
+        response .send( `ERROR: ${ err }` );
     }
       
+}
+
+// Login Usuario
+userController .loginUser = async ( request, response ) => {
+    console .log( 'Enviado por el Cliente', request .body );      // Representa los datos que envia el 'cliente'
+
+    const { email, password } = request .body;
+
+    // Settings
+    const SECRET = process .env .SECRET_KEY || 'secret';
+    console .log( 'SECRET', SECRET );
+
+    // TODO: Hacer definir valores usando express ( app.set/app.get ) como se hizo con 'port'
+
+    try {
+        const user = await User .find({
+            email
+        });
+
+        console .log( 'user', user );
+
+        if( user .length == 1 ) {
+            // Valida contraseña
+            const match = await bcrypt .compare( password, user[ 0 ] .password );
+
+            console .log( 'match', match );
+
+            if( match ) {   //login
+
+                const payload = {
+                    _id       : user ._id,
+                    userName  : user .userName,
+                    firstName : user .firstName,
+                    lastName  : user .lastName,
+                    email     : user .email
+                }
+
+                let token = jwt .sign( payload, SECRET, {
+                    expiresIn: 2000
+                });
+
+                console .log( 'TOKEN', token );
+                response .send( token );
+
+            }
+        }
+        else {
+            response .json({ error: 'Registrese. El usuario NO existe.' });
+        }
+
+    } catch ( err ) {
+        response .send( `ERROR: ${ err }` );
+    }
 }
 
 module .exports = userController;

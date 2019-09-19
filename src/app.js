@@ -4,6 +4,7 @@ const express = require( 'express' ),       // Importa paquete de Express
 
 // Settings
 app .set( 'port', process .env .PORT || 4000 );     // app .set() define valores por defecto para la aplicación con el nombre 'port'
+app .set( 'title', 'My Site' );
                                                     // Considera Puerto para servicios en la nube (Si existe que lo use, si no que use por defecto el 8082)
 // Middlewares
 app .use( cors() );                                 // Habilita el Cross-origin resource sharing (CORS)
