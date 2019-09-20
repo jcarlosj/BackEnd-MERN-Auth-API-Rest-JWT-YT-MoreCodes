@@ -5,6 +5,10 @@ const userController = {},
       jwt = require( 'jsonwebtoken' ),                // Genera Web Token
       User = require( '../models/user.model' );       // Importa el Modelo de datos;
 
+// Settings
+const SECRET = process .env .SECRET_KEY || 'secret';
+console .log( 'SECRET', SECRET );
+
 // Registra Usuario
 userController .createUser = async ( request, response ) => { 
     console .log( 'Enviado por el Cliente', request .body );      // Representa los datos que envia el 'cliente'
@@ -55,10 +59,6 @@ userController .loginUser = async ( request, response ) => {
 
     const { email, password } = request .body;
 
-    // Settings
-    const SECRET = process .env .SECRET_KEY || 'secret';
-    console .log( 'SECRET', SECRET );
-
     // TODO: Hacer definir valores usando express ( app.set/app.get ) como se hizo con 'port'
 
     try {
@@ -101,5 +101,33 @@ userController .loginUser = async ( request, response ) => {
         response .send( `ERROR: ${ err }` );
     }
 }
+
+// Prefil de Usuario
+userController .profileUser = async ( request, response ) => {
+    console .log( 'Headers', request .headers[ 'authorization' ] );
+
+    try {
+        const decoded = await jwt .verify( request .headers[ 'authorization' ], SECRET ); 
+
+        const user = await User .findOne({
+            _id: decoded ._id
+        });
+
+        console .log( 'user', user );
+
+        if( user .length == 1 ) {
+            response .json( user );
+        } 
+        else {
+            response .json({ error: 'El usuario NO existe!' });
+        }
+
+        response .send( `Perfil de usuario` );
+
+    } catch ( err ) {
+        response .send( `ERROR: ${ err }` );
+    }
+    
+} 
 
 module .exports = userController;
