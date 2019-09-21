@@ -77,12 +77,17 @@ userController .loginUser = async ( request, response ) => {
             if( match ) {   //login
 
                 const payload = {
-                    _id       : user ._id,
-                    userName  : user .userName,
-                    firstName : user .firstName,
-                    lastName  : user .lastName,
-                    email     : user .email
+                    _id       : user[ 0 ] ._id,
+                    userName  : user[ 0 ] .userName,
+                    firstName : user[ 0 ] .firstName,
+                    lastName  : user[ 0 ] .lastName,
+                    email     : user[ 0 ] .email
                 }
+
+                /** Test: Paso de JSON y Token al FrontEnd */
+                // let token = jwt .sign( { foo: 'bar' }, SECRET, {
+                //     expiresIn: 2000
+                // })
 
                 let token = jwt .sign( payload, SECRET, {
                     expiresIn: 2000
@@ -102,7 +107,7 @@ userController .loginUser = async ( request, response ) => {
     }
 }
 
-// Prefil de Usuario
+// Perfil de Usuario
 userController .profileUser = async ( request, response ) => {
     console .log( 'Headers', request .headers[ 'authorization' ] );
 
